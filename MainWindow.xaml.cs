@@ -64,6 +64,18 @@ namespace WPF_PT_LAB2_ATTEMPT3
                 root.Items.Add(BuildFileTree(file));
             }
 
+            root.MouseRightButtonDown += new MouseButtonEventHandler(RMB_Click);
+
+            root.ContextMenu = new ContextMenu();
+            MenuItem createOption = new MenuItem { Header = "Create" };
+            MenuItem deleteOption = new MenuItem { Header = "Delete" };
+
+            root.ContextMenu.Items.Add(createOption);
+            root.ContextMenu.Items.Add(deleteOption);
+
+            createOption.Click += new RoutedEventHandler(CreateOption_Click);
+            deleteOption.Click += new RoutedEventHandler(DeleteOption_Click);
+
             return root;
         }
 
@@ -75,7 +87,90 @@ namespace WPF_PT_LAB2_ATTEMPT3
                 Tag = file.FullName
             };
 
+            item.MouseRightButtonDown += new MouseButtonEventHandler(RMB_Click);
+
+            item.ContextMenu = new ContextMenu();
+            MenuItem openOption = new MenuItem { Header = "Open" };
+            MenuItem deleteOption = new MenuItem { Header = "Delete" };
+
+            item.ContextMenu.Items.Add(openOption);
+            item.ContextMenu.Items.Add(deleteOption);
+
+            openOption.Click += new RoutedEventHandler(OpenOption_Click);
+            deleteOption.Click += new RoutedEventHandler(DeleteOption_Click);
+
             return item;
+        }   
+
+        private void OpenOption_Click(object sender, RoutedEventArgs e)
+        {
+            TreeViewItem file = (TreeViewItem)treeView.SelectedItem;
+
+            string textBuffer = File.ReadAllText(file.Tag.ToString());
+            textBlock.Text = textBuffer;
         }
+
+        private void CreateOption_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void DeleteOption_Click(object sender, RoutedEventArgs e)
+        {
+            TreeViewItem record = (TreeViewItem)treeView.SelectedItem;
+            string path = record.Tag.ToString();
+            FileAttributes attributes = File.GetAttributes(path);
+            TreeViewItem parent = (TreeViewItem)record.Parent;
+            parent.Items.Remove(record);
+
+            RemoveReadOnly(path);
+            if ((attributes & FileAttributes.Directory) == FileAttributes.Directory)
+            {
+                try
+                {
+                    Directory.Delete(path, true);
+                }
+                catch
+                {
+                    RecursiveReadOnlyHandle(path);
+                    Directory.Delete(path, true);
+                }
+            }
+            else
+                File.Delete(path);
+        }
+
+        private void RMB_Click(object sender, RoutedEventArgs e)
+        {
+            TreeViewItem treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
+
+            if (treeViewItem != null)
+                treeViewItem.Focus();
+        }
+
+        static TreeViewItem VisualUpwardSearch(DependencyObject source)
+        {
+            while (source != null && !(source is TreeViewItem))
+                source = VisualTreeHelper.GetParent(source);
+
+            return source as TreeViewItem;
+        }
+
+        private void RecursiveReadOnlyHandle(string path)
+        {
+            foreach (string entry in Directory.GetDirectories(path))
+                RecursiveReadOnlyHandle(entry);
+
+            foreach (string entry in Directory.GetFiles(path))
+                RemoveReadOnly(entry);
+        }
+
+        private void RemoveReadOnly(string path)
+        {
+            FileAttributes attributes = File.GetAttributes(path);
+            attributes = attributes & (~FileAttributes.ReadOnly);
+            File.SetAttributes(path, attributes);
+        }
+
     }
 }

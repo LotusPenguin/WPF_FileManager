@@ -7,12 +7,15 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <ToolBar HorizontalAlignment="Left" Height="30" Margin="10,10,0,0" VerticalAlignment="Top" Width="50" Header="File">
+        <ToolBar HorizontalAlignment="Left" Height="30" VerticalAlignment="Top" Width="50" Header="File">
             <MenuItem x:Name="Open" Header="Open" Click="Open_Click"/>
             <MenuItem x:Name="Exit" Header="Exit" Click="Exit_Click"/>
         </ToolBar>
-        <TreeView x:Name="treeView" Margin="0,54,500,0">
+        <TreeView x:Name="treeView" Margin="0,30,500,0">
         </TreeView>
+        <ScrollViewer HorizontalAlignment="Right">
+            <TextBlock x:Name ="textBlock" Height="Auto" TextWrapping="Wrap" Width="480"/>
+        </ScrollViewer>
 
     </Grid>
 </Window>
