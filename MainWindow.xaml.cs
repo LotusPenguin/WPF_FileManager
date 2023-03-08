@@ -65,6 +65,7 @@ namespace WPF_PT_LAB2_ATTEMPT3
             }
 
             root.MouseRightButtonDown += new MouseButtonEventHandler(RMB_Click);
+            root.Selected += new RoutedEventHandler(LMB_Click);
 
             root.ContextMenu = new ContextMenu();
             MenuItem createOption = new MenuItem { Header = "Create" };
@@ -88,6 +89,7 @@ namespace WPF_PT_LAB2_ATTEMPT3
             };
 
             item.MouseRightButtonDown += new MouseButtonEventHandler(RMB_Click);
+            item.Selected += new RoutedEventHandler(LMB_Click);
 
             item.ContextMenu = new ContextMenu();
             MenuItem openOption = new MenuItem { Header = "Open" };
@@ -105,14 +107,29 @@ namespace WPF_PT_LAB2_ATTEMPT3
         private void OpenOption_Click(object sender, RoutedEventArgs e)
         {
             TreeViewItem file = (TreeViewItem)treeView.SelectedItem;
-
-            string textBuffer = File.ReadAllText(file.Tag.ToString());
-            textBlock.Text = textBuffer;
+            textBlock.Text = File.ReadAllText(file.Tag.ToString());
         }
 
         private void CreateOption_Click(object sender, RoutedEventArgs e)
         {
+            TreeViewItem directory = (TreeViewItem)treeView.SelectedItem;
 
+            CreationDialog creationDialog = new CreationDialog(directory.Tag.ToString());
+            creationDialog.ShowDialog();
+
+            if(creationDialog.GetStatus())
+            {
+                if (File.Exists(creationDialog.GetPath()))
+                {
+                    FileInfo file = new FileInfo(creationDialog.GetPath());
+                    directory.Items.Add(BuildFileTree(file));
+                }    
+                else if (Directory.Exists(creationDialog.GetPath()))
+                {
+                    DirectoryInfo newDirectory = new DirectoryInfo(creationDialog.GetPath());
+                    directory.Items.Add(BuildDirectoryTree(newDirectory));
+                }
+            }
         }
 
         private void DeleteOption_Click(object sender, RoutedEventArgs e)
@@ -146,6 +163,13 @@ namespace WPF_PT_LAB2_ATTEMPT3
 
             if (treeViewItem != null)
                 treeViewItem.Focus();
+
+            PrintArguments();
+        }
+
+        private void LMB_Click(object sender, RoutedEventArgs e)
+        {
+            PrintArguments();
         }
 
         static TreeViewItem VisualUpwardSearch(DependencyObject source)
@@ -170,6 +194,48 @@ namespace WPF_PT_LAB2_ATTEMPT3
             FileAttributes attributes = File.GetAttributes(path);
             attributes = attributes & (~FileAttributes.ReadOnly);
             File.SetAttributes(path, attributes);
+        }
+
+        private void PrintArguments()
+        {
+            TreeViewItem selectedItem = (TreeViewItem)treeView.SelectedItem;
+            if (File.Exists(selectedItem.Tag.ToString()))
+            {
+                FileInfo selectedElement = new FileInfo(selectedItem.Tag.ToString());
+                statusText.Text = GetRASH(selectedElement);
+            }
+            else if (Directory.Exists(selectedItem.Tag.ToString()))
+            {
+                DirectoryInfo selectedElement = new DirectoryInfo(selectedItem.Tag.ToString());
+                statusText.Text = GetRASH(selectedElement);
+            }
+        }
+
+        public static string GetRASH(FileSystemInfo element)
+        {
+            string output = "";
+
+            if ((element.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                output += "r";
+            else
+                output += "-";
+
+            if ((element.Attributes & FileAttributes.Archive) == FileAttributes.Archive)
+                output += "a";
+            else
+                output += "-";
+
+            if ((element.Attributes & FileAttributes.System) == FileAttributes.System)
+                output += "s";
+            else
+                output += "-";
+
+            if ((element.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
+                output += "h";
+            else
+                output += "-";
+
+            return output;
         }
 
     }

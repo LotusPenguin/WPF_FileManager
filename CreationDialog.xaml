@@ -1,0 +1,21 @@
+﻿<Window x:Class="WPF_PT_LAB2_ATTEMPT3.CreationDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPF_PT_LAB2_ATTEMPT3"
+        mc:Ignorable="d"
+        Title="CreateDialog" Height="300" Width="300">
+    <Grid>
+        <TextBox x:Name="fileName" HorizontalAlignment="Left" Margin="107,54,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="150" Height="16"/>
+        <TextBlock HorizontalAlignment="Left" Margin="50,54,0,0" Text="Name:" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <RadioButton x:Name="fileType" Content="File" HorizontalAlignment="Left" Margin="86,93,0,0" VerticalAlignment="Top" IsChecked="True"/>
+        <RadioButton x:Name="directoryType" Content="Directory" HorizontalAlignment="Left" Margin="128,93,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="ReadOnlyCheck" Content="ReadOnly" HorizontalAlignment="Left" Margin="86,156,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="ArchiveCheck" Content="Archive" HorizontalAlignment="Left" Margin="86,172,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="HiddenCheck" Content="Hidden" HorizontalAlignment="Left" Margin="86,188,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="SystemCheck" Content="System" HorizontalAlignment="Left" Margin="86,204,0,0" VerticalAlignment="Top"/>
+        <Button Content="Ok" HorizontalAlignment="Left" Margin="67,244,0,0" VerticalAlignment="Top" Width="54" Click="Ok_Click"/>
+        <Button Content="Cancel" HorizontalAlignment="Left" Margin="135,244,0,0" VerticalAlignment="Top" Width="54" Click="Cancel_Click"/>
+    </Grid>
+</Window>
