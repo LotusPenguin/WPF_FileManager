@@ -16,7 +16,7 @@ using System.Windows.Forms;
 using System.Globalization;
 using System.IO;
 
-namespace WPF_PT_LAB2_ATTEMPT3
+namespace WPF_FileManager
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

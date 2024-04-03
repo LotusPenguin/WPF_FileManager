@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace WPF_PT_LAB2_ATTEMPT3
+namespace WPF_FileManager
 {
     /// <summary>
     /// Interaction logic for App.xaml
